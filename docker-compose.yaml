@@ -1,0 +1,11 @@
+services:
+  api:
+    image: investimento-agregador
+    ports:
+      - "8080:8080"
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 247636
+      POSTGRES_DB: investment_aggregator
