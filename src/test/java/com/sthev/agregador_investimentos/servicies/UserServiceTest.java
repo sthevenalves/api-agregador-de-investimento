@@ -103,6 +103,22 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class listUsers{
+        @Test
+        void shouldReturnsAllUsersWithSuccess() {
+            //arrange
+            var user = createUser();
+            doReturn(List.of(user)).when(userRepository)
+                    .findAll();
+            //act
+            var output = userService.getAllUsers();
+            //assert
+            assertNotNull(output);
+            assertEquals(List.of(user).size(), output.size());
+        }
+    }
+
 
 
 
