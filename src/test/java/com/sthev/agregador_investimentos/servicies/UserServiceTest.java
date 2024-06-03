@@ -74,6 +74,35 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class getUserById{
+        @Test
+        @DisplayName("should Get UserById When Successful")
+        void shouldGetUserByIdWhenSuccess() {
+            //arrange
+            var user = createUser();
+            doReturn(Optional.of(user)).when(userRepository).findById(uuidArgumentCaptor.capture());
+            //act
+            var output = userService.getUserById(user.getUserId().toString());
+            //assert
+            assertTrue(output.isPresent());
+            assertEquals(user.getUserId(), uuidArgumentCaptor.getValue());
+        }
+
+        @Test
+        @DisplayName("should Get UserById with Successful when optional is empty")
+        void shouldGetUserByIdWithSuccessWhenOptionalIsEmpty() {
+            //arrange
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty()).when(userRepository).findById(uuidArgumentCaptor.capture());
+            //act
+            var output = userService.getUserById(userId.toString());
+            //assert
+            assertTrue(output.isEmpty());
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+        }
+    }
+
 
 
 
