@@ -30,4 +30,24 @@ class UserServiceTest {
     private UserService userService;
 
 
+
+    private User createUser(){
+        return new User(
+                UUID.randomUUID(),
+                null,
+                LocalDateTime.now(),
+                "12345",
+                "test@email.com",
+                "username" );
+    }
+    private UserDTO createUserDTO(){
+        return new UserDTO("test",
+                "test2@email.com",
+                "54321");
+    }
+    private UpdateUserDTO updateUserDTO(){
+        return new UpdateUserDTO("newName",
+                "newPassword");
+    }
+
 }
