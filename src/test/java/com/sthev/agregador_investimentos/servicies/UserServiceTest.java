@@ -119,7 +119,57 @@ class UserServiceTest {
         }
     }
 
+    @Nested
+    class deleteById{
 
+        @Test
+        @DisplayName("should delete an User with success")
+        void shouldDeleteUserWithSuccess() {
+            //arrange
+            doReturn(true)
+                    .when(userRepository)
+                    .existsById(uuidArgumentCaptor.capture());
+
+            doNothing()
+                    .when(userRepository)
+                    .deleteById(uuidArgumentCaptor.capture());
+
+            var userId = UUID.randomUUID();
+
+            //act
+            userService.deleteUser(userId.toString());
+
+            //assert
+            var idList = uuidArgumentCaptor.getAllValues();
+            assertEquals(userId, idList.get(0));
+            assertEquals(userId, idList.get(1));
+
+            verify(userRepository, times(1)).existsById(idList.get(0));
+            verify(userRepository, times(1)).deleteById(idList.get(1));
+        }
+
+        @Test
+        @DisplayName("should Not Delete User When User Not Exists")
+        void shouldNotDeleteUserWhenUserNotExists() {
+            //arrange
+            doReturn(false)
+                    .when(userRepository)
+                    .existsById(uuidArgumentCaptor.capture());
+
+            var userId = UUID.randomUUID();
+
+            //act
+            userService.deleteUser(userId.toString());
+
+            //assert
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+            verify(userRepository, times(1)).existsById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(0)).deleteById(any());
+        }
+
+
+    }
 
 
     private User createUser(){
