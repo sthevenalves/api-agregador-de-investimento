@@ -29,6 +29,52 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    @Captor
+    private ArgumentCaptor<User> userArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<UUID> uuidArgumentCaptor;
+
+    @Nested
+    class createUser{
+
+        @Test
+        @DisplayName("Should create a User when successful")
+        void createUserWhenSuccess(){
+            var user = createUser();
+            //arrange
+            doReturn(user).when(userRepository).save(userArgumentCaptor.capture());
+
+            var input = createUserDTO();
+
+            //act
+            var output = userService.createUser(input);
+
+            //assert
+            assertNotNull(output);
+
+            var userCaptured = userArgumentCaptor.getValue();
+
+            assertEquals(input.username(), userCaptured.getUsername());
+            assertEquals(input.email(), userCaptured.getEmail());
+            assertEquals(input.password(), userCaptured.getPassword());
+        }
+
+        @Test
+        @DisplayName("Should throws Exception when create a User when not successful")
+        void createUserWhenNotSuccess(){
+            //arrange
+            doThrow(new RuntimeException()).when(userRepository).save(any());
+
+            var input = new UserDTO("teste",
+                    "test@email.com",
+                    "12345");
+            //act //assertions
+            assertThrows(RuntimeException.class, ()-> userService.createUser(input));
+        }
+    }
+
+
 
 
     private User createUser(){
