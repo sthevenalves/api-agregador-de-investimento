@@ -171,6 +171,60 @@ class UserServiceTest {
 
     }
 
+    @Nested
+    class updateUser{
+        @Test
+        @DisplayName("should update UserById when Username and password is filled")
+        void shouldUpdateUserWhenSuccess() {
+            //arrange
+            var user = createUser();
+            var updateUserDTO = updateUserDTO();
+            doReturn(Optional.of(user))
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+
+            doReturn(user)
+                    .when(userRepository)
+                    .save(userArgumentCaptor.capture());
+            //act
+            userService.updateUser(user.getUserId().toString(), updateUserDTO);
+
+            //assert
+            assertEquals(user.getUserId(), uuidArgumentCaptor.getValue());
+
+            var userCaptured = userArgumentCaptor.getValue();
+
+            assertEquals(updateUserDTO.username(), userCaptured.getUsername());
+            assertEquals(updateUserDTO.password(), userCaptured.getPassword());
+
+            verify(userRepository, times(1))
+                    .findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(1))
+                    .save(user);
+        }
+
+        @Test
+        @DisplayName("should not update user when user not exists")
+        void shouldNotUpdateUserWhenUserNotExists() {
+            //arrange
+            var updateUserDTO = updateUserDTO();
+            var userId = UUID.randomUUID();
+            doReturn(Optional.empty())
+                    .when(userRepository)
+                    .findById(uuidArgumentCaptor.capture());
+
+            //act
+            userService.updateUser(userId.toString(), updateUserDTO);
+
+            //assert
+            assertEquals(userId, uuidArgumentCaptor.getValue());
+
+            verify(userRepository, times(1))
+                    .findById(uuidArgumentCaptor.getValue());
+            verify(userRepository, times(0))
+                    .save(any());
+        }
+    }
 
     private User createUser(){
         return new User(
