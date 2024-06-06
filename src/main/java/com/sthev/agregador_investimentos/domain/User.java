@@ -1,10 +1,12 @@
 package com.sthev.agregador_investimentos.domain;
 
+import com.sthev.agregador_investimentos.domain.dto.UserDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +27,17 @@ public class User {
 
     @UpdateTimestamp
     private LocalDateTime updateTimeStamp;
+
+    @OneToMany(mappedBy = "user")
+    private List<Account> account;
+
+    public List<Account> getAccount() {
+        return account;
+    }
+
+    public void setAccount(List<Account> account) {
+        this.account = account;
+    }
 
     public User() {
     }
