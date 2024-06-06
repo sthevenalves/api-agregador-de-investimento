@@ -1,8 +1,8 @@
 package com.sthev.agregador_investimentos.servicies;
 
-import com.sthev.agregador_investimentos.domain.UpdateUserDTO;
+import com.sthev.agregador_investimentos.domain.dto.UpdateUserDTO;
 import com.sthev.agregador_investimentos.domain.User;
-import com.sthev.agregador_investimentos.domain.UserDTO;
+import com.sthev.agregador_investimentos.domain.dto.UserDTO;
 import com.sthev.agregador_investimentos.repositories.UserRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
