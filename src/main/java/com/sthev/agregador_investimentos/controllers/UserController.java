@@ -1,8 +1,9 @@
 package com.sthev.agregador_investimentos.controllers;
 
-import com.sthev.agregador_investimentos.domain.UpdateUserDTO;
+import com.sthev.agregador_investimentos.domain.dto.CreateAccountDto;
+import com.sthev.agregador_investimentos.domain.dto.UpdateUserDTO;
 import com.sthev.agregador_investimentos.domain.User;
-import com.sthev.agregador_investimentos.domain.UserDTO;
+import com.sthev.agregador_investimentos.domain.dto.UserDTO;
 import com.sthev.agregador_investimentos.servicies.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -50,4 +51,12 @@ public class UserController {
         userService.updateUser(id, data);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{userId}/accounts")
+    public ResponseEntity<Void> createAccount (@PathVariable("userId") String userId,
+                                    @RequestBody CreateAccountDto accountDto){
+        userService.createAccount(userId, accountDto);
+        return ResponseEntity.ok().build();
+    }
+
 }
