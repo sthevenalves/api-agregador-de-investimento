@@ -1,13 +1,21 @@
 package com.sthev.agregador_investimentos.servicies;
 
-import com.sthev.agregador_investimentos.domain.UpdateUserDTO;
+import com.sthev.agregador_investimentos.domain.Account;
+import com.sthev.agregador_investimentos.domain.BillingAddress;
+import com.sthev.agregador_investimentos.domain.dto.CreateAccountDto;
+import com.sthev.agregador_investimentos.domain.dto.UpdateUserDTO;
 import com.sthev.agregador_investimentos.domain.User;
-import com.sthev.agregador_investimentos.domain.UserDTO;
+import com.sthev.agregador_investimentos.domain.dto.UserDTO;
+import com.sthev.agregador_investimentos.repositories.AccountRepository;
+import com.sthev.agregador_investimentos.repositories.BillingAddressRepository;
 import com.sthev.agregador_investimentos.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +25,12 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private BillingAddressRepository billingAddressRepository;
 
     public UUID createUser(UserDTO dto) {
         User user = new User(dto);
@@ -53,5 +67,28 @@ public class UserService {
 
             userRepository.save(user);
         }
+    }
+
+    public void createAccount(String userId, CreateAccountDto accountDto){
+        var user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        //Entity -> DTO
+        var account = new Account(
+                UUID.randomUUID(),
+                accountDto.description(),
+                new ArrayList<>(),
+                user,
+                null
+        );
+        var accountCreated = accountRepository.save(account);
+
+        //Entity -> DTO
+        var billingAddress = new BillingAddress(
+                accountCreated.getAccountId(),
+                account,
+                accountDto.street(),
+                accountDto.number()
+        );
+        billingAddressRepository.save(billingAddress);
     }
 }
