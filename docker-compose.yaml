@@ -1,11 +1,14 @@
 services:
-  api:
-    image: investimento-agregador
+  mysql:
+    image: mysql
     ports:
-      - "8080:8080"
-  db:
-    image: postgres:16
+      - "3306:3306"
+    expose:
+      - "3306"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 247636
-      POSTGRES_DB: investment_aggregator
+      - MYSQL_USER=springuser
+      - MYSQL_PASSWORD=12345
+      - MYSQL_DATABASE=db_agregador_investimento
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - "./conf.d:/etc/mysql/conf.d:ro"
