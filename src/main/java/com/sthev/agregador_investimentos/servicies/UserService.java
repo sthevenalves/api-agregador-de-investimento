@@ -2,7 +2,8 @@ package com.sthev.agregador_investimentos.servicies;
 
 import com.sthev.agregador_investimentos.domain.Account;
 import com.sthev.agregador_investimentos.domain.BillingAddress;
-import com.sthev.agregador_investimentos.domain.dto.CreateAccountDto;
+import com.sthev.agregador_investimentos.domain.dto.AccountDto;
+import com.sthev.agregador_investimentos.domain.dto.AccountResponseDto;
 import com.sthev.agregador_investimentos.domain.dto.UpdateUserDTO;
 import com.sthev.agregador_investimentos.domain.User;
 import com.sthev.agregador_investimentos.domain.dto.UserDTO;
@@ -69,7 +70,7 @@ public class UserService {
         }
     }
 
-    public void createAccount(String userId, CreateAccountDto accountDto){
+    public void createAccount(String userId, AccountDto accountDto){
         var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         //Entity -> DTO
@@ -90,5 +91,15 @@ public class UserService {
                 accountDto.number()
         );
         billingAddressRepository.save(billingAddress);
+    }
+
+    public List<AccountResponseDto> listAccounts (String userId){
+        var user = userRepository.findById(UUID.fromString(userId))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        return user.getAccount()
+                .stream()
+                .map(ac -> new AccountResponseDto(ac.getAccountId().toString(),ac.getDescription()))
+                .toList();
     }
 }

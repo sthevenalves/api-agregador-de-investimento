@@ -1,6 +1,7 @@
 package com.sthev.agregador_investimentos.controllers;
 
-import com.sthev.agregador_investimentos.domain.dto.CreateAccountDto;
+import com.sthev.agregador_investimentos.domain.dto.AccountDto;
+import com.sthev.agregador_investimentos.domain.dto.AccountResponseDto;
 import com.sthev.agregador_investimentos.domain.dto.UpdateUserDTO;
 import com.sthev.agregador_investimentos.domain.User;
 import com.sthev.agregador_investimentos.domain.dto.UserDTO;
@@ -54,9 +55,15 @@ public class UserController {
 
     @PostMapping("/{userId}/accounts")
     public ResponseEntity<Void> createAccount (@PathVariable("userId") String userId,
-                                    @RequestBody CreateAccountDto accountDto){
+                                    @RequestBody AccountDto accountDto){
         userService.createAccount(userId, accountDto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{userId}/accounts")
+    public ResponseEntity<List<AccountResponseDto>> listAccount (@PathVariable("userId") String userId){
+        var accounts = userService.listAccounts(userId);
+        return ResponseEntity.ok(accounts);
     }
 
 }
